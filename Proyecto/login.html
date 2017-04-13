@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Ingresar</title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<form action="index.html" style="width:40%; margin:0 auto; margin-top:20px;">	
+				<button type="submit" class="btn btn-primary btn-sm">Go Home</button>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<h1>Ingresar</h1>
+		</div>
+	</div>
+	<div class="row" style="margin-top: 30px;">
+		<div class="col-md-6 text-center" style="left:100px;">
+			<form action="maquiview/login_maquiview.php" method="POST" style="width:40%; margin:0 auto;">
+				<label>Usuario MaquiView</label>
+				<input type="text" class="form-control" placeholder="juanreutter" name="usuario" style="margin-bottom: 20px;" required="true">
+				<label>Clave MaquiView</label>
+				<input type="password" class="form-control" placeholder="miclave" name="clave" style="margin-bottom: 20px;" required="true">
+				<div id="success"></div>
+				<button type="submit" class="btn btn-success btn-md">Ingresar a MaquiView</button>
+			</form>
+		</div>
+		<div class="col-md-6 text-center" style="right:100px;">
+			<form action="maquiview-quipasa/login_maquiviewquipasa.php" method='POST' style="width:40%; margin:0 auto;">
+				<label>Usuario MaquiView</label>
+				<input type="text" class="form-control" placeholder="juanreutter" name="usuario_m" style="margin-bottom: 20px;" required="true">
+				<label>Clave MaquiView</label>
+				<input type="password" class="form-control" placeholder="miclave" name="clave_m" style="margin-bottom: 20px;" required="true">
+				<label>Usuario Quipasa</label>
+				<input type="text" class="form-control" placeholder="jreutter" name="usuario_q" style="margin-bottom: 20px;" required="true">
+				<label>Clave Quipasa</label>
+				<input type="password" class="form-control" placeholder="miclave" name="clave_q" style="margin-bottom: 20px;" required="true">
+				<button type="submit" class="btn btn-success btn-md">Ingresar a MaquiView + Quipasa</button>
+			</form>
+		</div>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+# Consultas SQL
+
+# Las 5 peliculas mas vistas en el año.
+
+	SELECT Programa.nombre, COUNT(Programa.id)
+	FROM Programa, Pelicula, VistoPrograma
+	WHERE Programa.id = Pelicula.id
+		  AND Programa.id = VistoPrograma.id
+		  AND VistoPrograma.fechavisto >= '2016-01-01'
+	GROUP BY Programa.id
+	ORDER BY COUNT(Programa.id) DESC
+	LIMIT 5;
+
+
+	SELECT Programa.nombre, COUNT(Programa.id) FROM Programa, Pelicula, VistoPrograma WHERE Programa.id = Pelicula.id AND VistoPrograma.fechavisto >= '2016-01-01' AND Programa.id = VistoPrograma.id_programa GROUP BY Programa.id ORDER BY COUNT(Programa.id) DESC LIMIT 5;
+
+
+# Las 5 peliculas mas vistas en el mes.
+
+	SELECT Programa.nombre, COUNT(Programa.id) FROM Programa, Pelicula, VistoPrograma WHERE Programa.id = Pelicula.id AND VistoPrograma.fechavisto >= '2016-06-01' AND Programa.id = VistoPrograma.id_programa GROUP BY Programa.id ORDER BY COUNT(Programa.id) DESC LIMIT 5;
+
+
+# La informacion basica de un programa con id XXXXX dado.
+
+	SELECT Programa.nombre, Programa.duracion, Programa.fecha_estreno 
+	FROM Programa
+	WHERE Programa.id = XXXXX;
+
+	SELECT Programa.nombre, Programa.duracion, Programa.fechaestreno FROM Programa WHERE Programa.id = '21';
+
+
+# Los actores de un programa con id XXXXX dado.
+
+	SELECT PoseeActor.nombre_actor
+	FROM Programa, PoseeActor
+	WHERE Programa.id = XXXXX
+		AND Programa.id = PoseeActor.id_programa;
+
+	SELECT PoseeActor.nombre_actor FROM Programa, PoseeActor WHERE Programa.id = '21' AND Programa.id = PoseeActor.id_programa;
+
+
+# Los directores de un programa con id XXXXX dado.
+
+	SELECT PoseeDirector.nombre_director
+	FROM Programa, PoseeDirector
+	WHERE Programa.id = XXXXX
+		AND Programa.id = PoseeDirector.id_programa;
+
+	SELECT PoseeDirector.nombre_director FROM Programa, PoseeDirector WHERE Programa.id = '21' AND Programa.id = PoseeDirector.id_programa;
+
+
+# Los generos de un programa con id XXXXX dado.
+
+	SELECT nombre_genero 
+	FROM PeliculaPoseeGenero
+	WHERE XXXXX = PeliculaPoseeGenero.id_pelicula
+	UNION
+	SELECT nombre_genero 
+	FROM EnTemporada, EnSerie, SeriePoseeGenero
+	WHERE XXXXX = Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = SeriePoseeGenero.id_serie;
+
+	SELECT nombre_genero FROM PeliculaPoseeGenero WHERE '21' = PeliculaPoseeGenero.id_pelicula UNION SELECT nombre_genero FROM EnTemporada, EnSerie, SeriePoseeGenero WHERE '21' = EnTemporada.id_capitulo AND EnTemporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = SeriePoseeGenero.id_serie;
+
+
+# El numero de temporada y serie a la que pertenece un programa con id XXXXX dado.
+	
+	SELECT Serie.nombre, Temporada.numero
+	FROM EnTemporada, Temporada, EnSerie, Serie
+	WHERE XXXXX = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie;
+
+	SELECT Serie.nombre, Temporada.numero FROM EnTemporada, Temporada, EnSerie, Serie WHERE '21' = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie;
+
+
+# Todas las peliculas con sus ids.
+
+	SELECT Programa.id, Programa.nombre
+	FROM Programa, Pelicula
+	WHERE Programa.id = Pelicula.id;
+
+	SELECT Programa.nombre, Programa.id FROM Programa, Pelicula WHERE Programa.id = Pelicula.id;
+
+
+# Todas las tuplas serie, capitulo, ids.
+	SELECT Programa.nombre, Programa.id, Serie.nombre
+	FROM Programa, EnTemporada, Temporada, EnSerie, Serie
+	WHERE Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie;
+
+	SELECT Programa.nombre, Programa.id, Serie.nombre FROM Programa, EnTemporada, Temporada, EnSerie, Serie WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie;
+
+
+# Todos los nombres de planes existentes.
+
+	SELECT Plan.nombre
+	FROM Plan;
+
+	SELECT Plan.nombre FROM Plan;
+	
+
+# Saldo disponible usuario XXXXX.
+ 
+	SELECT saldo
+	FROM Usuario
+	WHERE Usuario.username = XXXXX;
+
+	SELECT saldo FROM Usuario WHERE Usuario.username = 'juan';
+
+
+# Restarle un capitulo al saldo de un usuario XXXXX.
+
+	UPDATE Usuario
+	SET saldo = saldo - 0.25
+	WHERE username = XXXXX;
+
+	UPDATE Usuario SET saldo = saldo - 0.25 WHERE username = 'juan';
+
+
+# Restarle una pelicula al saldo de un usuario XXXXX.
+
+	UPDATE Usuario
+	SET saldo = saldo - 1
+	WHERE username = XXXXX;
+
+	UPDATE Usuario SET saldo = saldo - 1 WHERE username = 'juan';
+
+
+# Insertar tupla a VistoPrograma (usuario, idprograma, fechahoy)
+
+	INSERT INTO VistoPrograma VALUES(XXusuarioXX, XXidprogramaXX, (SELECT date('now')));
+
+
+# Registrar usuario a MaquiView recibiendo sus datos correspondientes.
+
+	INSERT INTO Usuario VALUES($usuario, $clave, $nombre, $sexo, $edad, $correo, 0);
+
+	INSERT INTO Contrato VALUES($usuario, $plan);
+
+	UPDATE Usuario SET saldo = (SELECT creditos FROM Plan WHERE Plan.nombre = "XXnombreplanXX") WHERE Usuario.username = "XXusuarioXX";
+
+
+# Busqueda programas (peliculas y series) con nombre XXXXX ordenados desde el mas reciente al mas antiguo.
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha
+	FROM Programa, Pelicula
+	WHERE Programa.id = Pelicula.id
+			AND Programa.nombre = 'XXXXX'
+	UNION
+	SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha
+	FROM Programa, EnTemporada, Temporada, EnSerie, Serie
+	WHERE Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie
+		AND Serie.nombre = 'XXXXX')
+	ORDER BY fecha DESC;
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula WHERE Programa.id = Pelicula.id AND Programa.nombre = 'The Walking Dead' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Serie.nombre = 'The Walking Dead') ORDER BY fecha DESC;
+
+
+# Busqueda programas (peliculas y series) con genero XXXXX ordenados desde el mas reciente al mas antiguo.
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha
+	FROM Programa, Pelicula, PeliculaPoseeGenero
+	WHERE Programa.id = Pelicula.id
+			AND Pelicula.id = PeliculaPoseeGenero.id_pelicula
+			AND PeliculaPoseeGenero.nombre_genero = 'Animada'
+	UNION
+	SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha
+	FROM Programa, EnTemporada, Temporada, EnSerie, Serie, SeriePoseeGenero
+	WHERE Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie
+		AND Serie.id_serie = SeriePoseeGenero.id_serie
+		AND SeriePoseeGenero.nombre_genero = 'Animada')
+	ORDER BY fecha DESC;
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula, PeliculaPoseeGenero WHERE Programa.id = Pelicula.id AND Pelicula.id = PeliculaPoseeGenero.id_pelicula AND PeliculaPoseeGenero.nombre_genero = 'Animada' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie, SeriePoseeGenero WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Serie.id_serie = SeriePoseeGenero.id_serie AND SeriePoseeGenero.nombre_genero = 'Animada') ORDER BY fecha DESC;
+
+
+# Busqueda programas (peliculas y series) con año XXXX ordenados desde el mas reciente al mas antiguo.
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha
+	FROM Programa, Pelicula
+	WHERE Programa.id = Pelicula.id
+			AND Programa.fechaestreno >= '2000-01-01'
+	UNION
+	SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha
+	FROM Programa, EnTemporada, Temporada, EnSerie, Serie
+	WHERE Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie
+		AND Programa.fechaestreno >= '2000-01-01')
+	ORDER BY fecha DESC;
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula WHERE Programa.id = Pelicula.id AND Programa.fechaestreno >= '2000-01-01' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Programa.fechaestreno >= '2000-01-01') ORDER BY fecha DESC;
+
+
+# Busqueda programas (peliculas y series) con nombre XXXXX y año de estreno YYYY ordenados desde el mas reciente al mas antiguo.
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha
+	FROM Programa, Pelicula
+	WHERE Programa.id = Pelicula.id
+		AND Programa.nombre = 'XXXXX'
+		AND Programa.fechaestreno >= '$year-01-01'
+		AND Programa.fechaestreno <= '$year-12-31'
+	UNION
+	SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha
+	FROM Programa, EnTemporada, Temporada, EnSerie, Serie
+	WHERE Programa.id = EnTemporada.id_capitulo
+		AND EnTemporada.id_temporada = Temporada.id_temporada
+		AND Temporada.id_temporada = EnSerie.id_temporada
+		AND EnSerie.id_serie = Serie.id_serie
+		AND Serie.nombre = 'XXXXX'
+		AND Programa.fechaestreno >= '$year-01-01'
+		AND Programa.fechaestreno <= '$year-12-31')
+	ORDER BY fecha DESC;
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula WHERE Programa.id = Pelicula.id AND Programa.nombre = 'XXXXX' AND Programa.fechaestreno >= '$year-01-01' AND Programa.fechaestreno <= '$year-12-31' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Serie.nombre = 'XXXXX' AND Programa.fechaestreno >= '$year-01-01' AND Programa.fechaestreno <= '$year-12-31') ORDER BY fecha DESC;
+
+
+# Busqueda por genero y año estreno.
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula, PeliculaPoseeGenero WHERE Programa.id = Pelicula.id AND Pelicula.id = PeliculaPoseeGenero.id_pelicula AND PeliculaPoseeGenero.nombre_genero = 'Animada' AND Programa.fechaestreno >= '$year-01-01' AND Programa.fechaestreno <= '$year-12-31' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie, SeriePoseeGenero WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Serie.id_serie = SeriePoseeGenero.id_serie AND SeriePoseeGenero.nombre_genero = 'Animada' AND Programa.fechaestreno >= '$year-01-01' AND Programa.fechaestreno <= '$year-12-31') ORDER BY fecha DESC;
+
+
+# Busqueda por nombre y genero.
+
+	(SELECT Programa.nombre, Programa.id, null, Programa.fechaestreno AS fecha FROM Programa, Pelicula, PeliculaPoseeGenero WHERE Programa.id = Pelicula.id AND Pelicula.id = PeliculaPoseeGenero.id_pelicula AND PeliculaPoseeGenero.nombre_genero = 'Animada' AND Programa.nombre = 'XXXXX' UNION SELECT Programa.nombre, Programa.id, Serie.nombre, Programa.fechaestreno AS fecha FROM Programa, EnTemporada, Temporada, EnSerie, Serie, SeriePoseeGenero WHERE Programa.id = EnTemporada.id_capitulo AND EnTemporada.id_temporada = Temporada.id_temporada AND Temporada.id_temporada = EnSerie.id_temporada AND EnSerie.id_serie = Serie.id_serie AND Serie.id_serie = SeriePoseeGenero.id_serie AND SeriePoseeGenero.nombre_genero = '$genero' AND Serie.nombre = '$nombre_programa) ORDER BY fecha DESC;
+
+
+# Todos los mensajes a un usuario $usuario que contienen la palabra XXpalabraXX
+
+	SELECT Mensajes.emisor, Mensajes.fecha, Mensajes.destinatario
+	FROM Mensajes
+	WHERE Mensajes.destinatario = $usuario
+	AND Mensajes.texto LIKE '%XXpalabraXX%'
+	UNION
+	SELECT Mensajes.emisor, Mensajes.fecha, Mensajes.destinatario
+	FROM Mensajes
+	WHERE Mensajes.destinatario IN (SELECT Grupos.nombre
+									FROM Grupos,Miembros,Usuarios
+									WHERE Miembros.grupo = Grupos.id 
+									AND Usuarios.username = $usuario
+									AND and Usuarios.email = miembros.usuario)
+	AND Mensajes.texto LIKE '%XXpalabraXX%';
+
+/* OJO: Hay un error en los datos de la tabla mensajes, los mensajes a grupos que ya estan guardados tienen el id en la columna destinatario y deberian tener el nombre del grupo ya que el dato de esa coluna es un varchar y no un int!! para los datos de los nuevos mensajes recordar insertar el mombre del grupo y no el id. De la misma manera para los usuarios en si mismos tenemos guardados los mensajes con los mails en las columnas emisor destinatario, lo que hace bastante incomodo consultar por ellos dado que en la pagina estamos usando los nombres de usuario y no los mails. Afortunadamente las columnas emisor y destinatario de la tabla mensajes no son llaves foraneas con referencia al mail de los usuarios y por lo tanto basta empezar a usar el nombre de usuario en vez de el mail a partir de ahora. */
+
+#Obtener id para nuevo comentario (se le suma 1 al resultado)
+
+	SELECT count(*)
+	FROM Mensajes
+
+#Insertar un comentario ($mensaje) del usuario $usuario para el destinatario $destinatario. El id se obtiene así y sumandole 1.
+	
+	INSERT INTO Mensajes VALUES($id, $usuario_q, $destinatario,DATE(date('Y-m-d')), $comentario, bool 'f');
+
+# OBTENER AMIGOS DE UN USUARIO 
+
+	SELECT u2.username AS username
+	FROM Usuarios  AS u1,Amistades , Usuarios AS u2
+	WHERE u1.username = '$usuario_q'
+	AND u1.email = Amistades.email1
+	AND Amistades.email2 = u2.email
+	UNION
+	SELECT u2.username AS username
+	FROM Usuarios  AS u1,Amistades , Usuarios AS u2
+	WHERE u1.username = '$usuario_q'
+	AND u1.email = Amistades.email2
+	AND Amistades.email1 = u2.email
+
+#Obtener grupos de un usuario
+
+	SELECT Grupos.nombre
+	FROM Usuarios,Grupos,Miembros
+	WHERE Usuarios.username = '$usuario_q'
+	AND Usuarios.email = Miembros.usuario
+	AND Grupos.id = Miembros.grupo
+
+## CONSULTAS PARA SISTEMA DE RECOMENDACION
+# los 5 usuarios que han intercambiado mas mensajes al usuario $username
+SELECT usuario.username, count(algo) AS cuenta
+FROM usuarios, mensajes
+WHERE 
+
+
+# Dado un usuario X entregue para cada amigo Y el conteo de comentarios que han intercambiado.
+
+	(SELECT destinatario AS p, COUNT(texto) as C1
+	FROM Mensajes
+	WHERE emisor = 'burroberto'
+	GROUP BY destinatario
+	UNION
+	SELECT emisor as p, COUNT(texto) AS C2
+	FROM Mensajes
+	WHERE destinatario = 'burroberto'
+	GROUP BY emisor)
+	ORDER BY C DESC;
+
+
+	SELECT emisor as p, COUNT(texto) AS C
+	FROM Mensajes
+	WHERE destinatario = 'burroberto'
+	GROUP BY emisor
+	ORDER BY C DESC;
+
+
+
+
+
+
+
+
